@@ -2,6 +2,9 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import './App.css'
 
+var Input = "";
+var Output = "";
+
 function JoplinIcon()
 {
   return (
@@ -105,8 +108,8 @@ function NavBar()
         DIGITEXT
       </div>
       <div className="row-container add-gaps">
-        <a className="navbar-button" href="/about">About</a>
-        <a className="navbar-button" href="/generate">Generate</a>
+        <button className="navbar-button" onClick={function(){window.location.replace("/about")}}>About</button>
+        <button className="navbar-button" onClick={function(){window.location.replace("/generate")}}>Generate</button>
       </div>
     </div>
   );
@@ -137,9 +140,9 @@ function About()
         <ObsidianIcon />
       </div>
       <div className="line-spacer"></div>
-      <a className="content-box redirect-button" href="/generate">
+      <button className="content-box redirect-button" onClick={function(){window.location.replace("/generate")}}>
           Get Started
-      </a>
+      </button>
     </div>
   );
 };
@@ -149,18 +152,41 @@ function Generate()
 return (
     <div className="page-container background-2">
       <NavBar />
+
+      <div className="line-spacer"></div>
+      <div className="line-spacer"></div>
+
+      <div className="left-half-frame">
+        <div className="row-container add-gaps">
+          <div className="col-container secondary-text">
+            Upload Image
+            <button className="upload-button">
+              <DocIcon />
+            </button>
+          </div>
+          <div className="col-container secondary-text">
+            Take Picture
+            <button className="upload-button">
+              <CameraIcon />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="line-spacer"></div>
+
       <div className="row-container add-gaps">
         <div className="secondary-text">
           Markdown and KaTex Notation
           <div className="display-panel">
-            
+            {Input}
           </div>
         </div>
 
         <div className="secondary-text">
           Render Output
           <div className="display-panel">
-            
+            {Output}
           </div>
         </div>
       </div>

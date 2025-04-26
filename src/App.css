@@ -132,11 +132,22 @@
   line-height: auto;
   white-space: nowrap;
   text-align: center;
-  color: #FFFFFF;
+  color: rgb(255, 255, 255);
+  background-color: rgba(0, 0, 0, 0);
+
+  cursor: pointer;
+}
+
+.navbar-button:hover {
+  color: rgb(245, 145, 40);
+  font-size: 20pt;
+
+  transition-property: all;
+  transition-duration: 0.25s;
 }
 
 .redirect-button {
-  background-color: rgba(44, 58, 141, 1);
+  background-color: rgba(45, 60, 140, 1);
   width: 25%;
   border-radius: 12pt;
   border-width: 0px;
@@ -148,16 +159,27 @@
   line-height: auto;
   white-space: nowrap;
   text-align: center;
-  color: #FFFFFF;
+  color: rgb(255, 255, 255);
+
+  cursor: pointer;
+}
+
+.redirect-button:hover {
+  color: rgba(45, 60, 140, 1);
+  background-color: rgb(255, 255, 255);
+
+  transition-property: all;
+  transition-duration: 0.25s;
 }
 
 .upload-button {
-  background-color: rgba(44, 58, 141, 1);
+  background-color: rgba(45, 60, 140, 1);
   width: auto;
   height: auto;
   border-radius: 12pt;
   border-width: 0px;
   padding: 4pt;
+  margin: 0pt;
 
   font-family: 'Arial';
   font-style: normal;
@@ -166,7 +188,18 @@
   line-height: auto;
   white-space: nowrap;
   text-align: center;
-  color: #FFFFFF;
+  color: rgb(255, 255, 255);
+
+  cursor: pointer;
+}
+
+.upload-button:hover {
+  background-color: rgb(90, 95, 185);
+  padding: 2pt;
+  margin: 2pt;
+
+  transition-property: all;
+  transition-duration: 0.25s;
 }
 
 .display-panel {

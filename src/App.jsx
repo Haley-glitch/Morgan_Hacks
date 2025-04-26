@@ -104,12 +104,12 @@ function NavBar()
 {
   return (
     <div className="navbar-container">
-      <div className="navbar-name">
+      <div className="navbar-name" onClick={function(){window.location.replace("/")}}>
         DIGITEXT
       </div>
       <div className="row-container add-gaps">
-        <button className="navbar-button" onClick={function(){window.location.replace("/about")}}>About</button>
-        <button className="navbar-button" onClick={function(){window.location.replace("/generate")}}>Generate</button>
+        <div className="navbar-button" onClick={function(){window.location.replace("/about")}}>About</div>
+        <div className="navbar-button" onClick={function(){window.location.replace("/generate")}}>Generate</div>
       </div>
     </div>
   );
@@ -140,9 +140,9 @@ function About()
         <ObsidianIcon />
       </div>
       <div className="line-spacer"></div>
-      <button className="content-box redirect-button" onClick={function(){window.location.replace("/generate")}}>
+      <div className="content-box redirect-button" onClick={function(){window.location.replace("/generate")}}>
           Get Started
-      </button>
+      </div>
     </div>
   );
 };
@@ -160,15 +160,15 @@ return (
         <div className="row-container add-gaps">
           <div className="col-container secondary-text">
             Upload Image
-            <button className="upload-button">
+            <div className="upload-button">
               <DocIcon />
-            </button>
+            </div>
           </div>
           <div className="col-container secondary-text">
             Take Picture
-            <button className="upload-button">
+            <div className="upload-button">
               <CameraIcon />
-            </button>
+            </div>
           </div>
         </div>
       </div>

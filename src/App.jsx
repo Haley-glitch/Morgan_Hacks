@@ -8,6 +8,7 @@ import 'katex/dist/katex.min.css';
 import { BlockMath, InlineMath } from 'react-katex';
 import ReactMarkdown from 'react-markdown';
 import {JoplinIcon, ObsidianIcon, DocIcon, CameraIcon, MicIcon } from"./Icons.jsx";
+import mammoth from 'mammoth';
 
 const GEMINI_KEY = API_KEY;
 
@@ -110,9 +111,23 @@ function Generate() {
     setImageFile(null);
   };
 
-  const handleImageUpload = (file) => {
-    setImageFile(file);
-    setAudioFile(null);
+  const handleImageUpload = async (file) => {
+    if (file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
+      try {
+        setIsLoading(true);
+        setError(null);
+        const text = await extractTextFromDocx(file);
+        setTranscription(text);
+        setOutputText(text);
+      } catch (error) {
+        setError(`Error processing Word document: ${error.message}`);
+      } finally {
+        setIsLoading(false);
+      }
+    } else {
+      setImageFile(file);
+      setAudioFile(null);
+    }
   };
 
   const fileToBase64 = (file) => {
@@ -121,6 +136,23 @@ function Generate() {
       reader.onloadend = () => resolve(reader.result?.split(',')[1]);
       reader.onerror = reject;
       reader.readAsDataURL(file);
+    });
+  };
+
+  const extractTextFromDocx = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        try {
+          const arrayBuffer = reader.result;
+          const result = await mammoth.convertToMarkdown({ arrayBuffer: arrayBuffer });
+          resolve(result.value);
+        } catch (error) {
+          reject(error);
+        }
+      };
+      reader.onerror = reject;
+      reader.readAsArrayBuffer(file);
     });
   };
 
@@ -135,20 +167,6 @@ function Generate() {
       setError(null);
       
       const base64Audio = await fileToBase64(audioFile);
-      let mimeType = imageFile.type;
-      let promptText = "";
-
-      if (mimeType.startsWith('image/')) {
-        promptText = "Translate the text from this image into a combination of Markdown syntax and KaTex syntax. Only provide the translation without any introductory text. Use Markdown syntax by default. If there's any mathematical notation, format it using KaTeX notation and enclose it in dollar signs ($...$) for inline math or double dollar signs ($$...$$) for block math. Use proper KaTeX escape sequences. If variables are in the context of a set/probability, then they should be capitalized. Otherwise, use lowercase variables. Interpret all greek letters with their proper escape sequences. Represent sentences that describe mathematical relations with KaTex when possible. Large sections of math should be encoded via the block math notation. Any math symbols that are next to each other horizontally should be treated as one equation.";
-      } else if (mimeType === 'application/pdf') {
-        promptText = "Extract all text content from this PDF and format it using Markdown. If there is any mathematical notation, format it using KaTeX notation enclosed in dollar signs ($...$) for inline math or double dollar signs ($$...$$) for block math. Use proper KaTeX escape sequences.";
-      } else if (mimeType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
-        promptText = "Extract all text content from this DOCX and format it using Markdown. If there is any mathematical notation, format it using KaTeX notation enclosed in dollar signs ($...$) for inline math or double dollar signs ($$...$$) for block math. Use proper KaTeX escape sequences.";
-      } else {
-        setError(`Unsupported file type: ${mimeType}. Please upload an image, PDF, or DOCX file.`);
-        setIsLoading(false);
-        return;
-      }
       const response = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`,
         {
@@ -233,9 +251,10 @@ function Generate() {
     try {
       setIsLoading(true);
       setError(null);
-      
+
       const base64Image = await fileToBase64(imageFile);
       const response = await fetch(
+
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`,
         {
           method: 'POST',
@@ -247,7 +266,12 @@ function Generate() {
               {
                 parts: [
                   {
-                    text: "Translate the text from this image into a combination of Markdown syntax and KaTex syntax. Only provide the translation without any introductory text. Use Markdown syntax by default. If there's any mathematical notation, format it using KaTeX notation and enclose it in dollar signs ($...$) for inline math or double dollar signs ($$...$$) for block math. Use proper KaTeX escape sequences. If variables are in the context of a set/probability, then they should be capitalized. Otherwise, use lowercase variables. Interpret all greek letters with their proper escape sequences. Represent sentences that describe mathematical relations with KaTex when possible. Large sections of math should be encoded via the block math notation. Any math symbols that are next to each other horizontally should be treated as one equation."
+                    text: "Translate the text from this image into a combination of Markdown syntax and KaTex syntax. Only provide the translation without any introductory text. Use Markdown syntax by default. When encountering mathematical notation or expressions, format them precisely using KaTeX notation according to these guidelines:\n\n" +
+                    "When you identify mathematical expressions in the audio, convert verbal descriptions into formal mathematical notation. Format inline mathematics with single dollar signs ($...$) and use double dollar signs ($$...$$) for standalone equations.\n\n" + "Use proper KaTeX escape sequences for all mathematical symbols and operations. For fractions, use the \\frac{numerator}{denominator} structure. For exponents, use the ^ symbol, and for subscripts, use the _ symbol.\n\n" +
+                    "Apply appropriate variable naming conventions in the transcription. Capitalize variables in the context of sets or probability (like $X$, $Y$, $Z$ for random variables and $A$, $B$, $C$ for sets). Use lowercase letters for deterministic variables, parameters, or indices (like $x$, $y$, $z$).\n\n" +
+                    "Represent all Greek letters with their proper escape sequences. Use \\alpha, \\beta, \\gamma, etc., for lowercase Greek letters, and \\Gamma, \\Delta, \\Theta, etc., for uppercase Greek letters.\n\n" +
+                    "For probability and statistics notation, use $P(A)$ for probability, $E[X]$ for expected value, and $\\sigma^2$ or $Var(X)$ for variance.\n\n" +
+                    "When encountering sentences that describe mathematical relationships, translate these verbal descriptions into precise KaTeX notation whenever possible."
                   },
                   {
                     inlineData: {
@@ -305,6 +329,41 @@ function Generate() {
     }
   };
 
+  const MarkdownWithMath = ({ text }) => {
+    if (!text) return null;
+    
+    const chunks = text.split(/(\$\$[\s\S]*?\$\$)/g);
+    
+    return (
+      <div>
+        {chunks.map((chunk, index) => {
+          if (chunk.startsWith('$$') && chunk.endsWith('$$')) {
+            const mathExpression = chunk.slice(2, -2);
+            return <BlockMath key={index} math={mathExpression} />;
+          }
+          
+          const inlineChunks = chunk.split(/(\$[^\$]+?\$)/g);
+          
+          return (
+            <span key={index}>
+              {inlineChunks.map((inlineChunk, inlineIndex) => {
+                if (inlineChunk.startsWith('$') && inlineChunk.endsWith('$')) {
+                  const mathExpression = inlineChunk.slice(1, -1);
+                  return <InlineMath key={`inline-${inlineIndex}`} math={mathExpression} />;
+                }
+                return (
+                  <ReactMarkdown key={`md-${inlineIndex}`}>
+                    {inlineChunk.replace(/ /g, "&nbsp;")}
+                  </ReactMarkdown>
+                );
+              })}
+            </span>
+          );
+        })}
+      </div>
+    );
+  };
+
   return (
     <div className="page-container background-2">
       <NavBar />
@@ -316,6 +375,7 @@ function Generate() {
         <div className="upload-section">
           <div className="secondary-text">
             <CameraIcon className="upload-icon" />
+            <DocIcon className="upload-icon" />
           </div>
           <div className="file-input-container">
             <label className="file-input-label">

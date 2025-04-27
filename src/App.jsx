@@ -1,11 +1,11 @@
+import { API_KEY } from './keys.js';
 import React, { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import './App.css'
 import AudioPlay from './Voice';
 import { BlockMath } from 'react-katex';
 import 'katex/dist/katex.min.css';
-
-const REACT_APP_GEMINI_KEY = 'AIzaSyALtIv9VcAqUPHezs69z-7ZJKqWczHqXNg';
+//const API_KEY = process.env.REACT_APP_GEMINI_KEY;
 
 var Input = "";
 var Output = "";
@@ -166,7 +166,7 @@ function Generate() {
   const [transcription, setTranscription] = useState('');
   const [outputText, setOutputText] = useState('');
   const [audioFile, setAudioFile] = useState(null);
-
+  console.log("Imported API Key:", API_KEY);
   const handleAudioUpload = (file) => {
     setAudioFile(file);
   };
@@ -180,7 +180,7 @@ function Generate() {
     try {
       const base64Audio = await fileToBase64(audioFile);
       const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-002:generateContent?key=${REACT_APP_GEMINI_KEY}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`,
         {
           method: 'POST',
           headers: {
@@ -234,7 +234,11 @@ function Generate() {
 
       const data = await response.json();
       if (data?.candidates?.[0]?.content?.parts?.[0]?.text) {
-        const transcribedText = data.candidates[0].content.parts[0].text;
+        let transcribedText = data.candidates[0].content.parts[0].text;
+        
+        // Normalize backslashes for LaTeX commands
+        transcribedText = transcribedText.replace(/\\\\/g, '\\\\');
++       console.log("Raw transcribedText:", transcribedText);
         setTranscription(transcribedText);
         setOutputText(transcribedText);
       } else {

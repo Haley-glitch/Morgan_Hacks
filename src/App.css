@@ -234,6 +234,7 @@ p {
   width: 45vw;
   background-color: rgba(30, 43, 111, 1);
   border: 3px solid rgba(255, 255, 255, 1);
+  border-radius: 15px; /* Added this line to make corners curved */
   margin-top: 5px;
   min-height: 60vh;
   white-space: pre-wrap;
@@ -241,7 +242,6 @@ p {
   text-align: left;
   padding: 10px;
   margin-bottom: 100px;
-  
 }
 
 .katex {

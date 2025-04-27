@@ -220,7 +220,7 @@ p {
 .display-panel {
   display: block;
   width: 45vw;
-  background-color: rgba(30, 43, 111, 1);
+  background-color: rgb(47, 61, 131);
   border: 3px solid rgba(255, 255, 255, 1);
   border-radius: 15px; /* Added this line to make corners curved */
   margin-top: 5px;
@@ -245,7 +245,7 @@ p {
   overflow-y: auto; /* Changed from visible to auto */
   max-height: 60vh; /* Set a maximum height */
   padding-right: 8px; /* Add some padding so scrollbar doesn't overlap content */
-  
+  color: white;
   /* Custom scrollbar styling */
   scrollbar-width: 20px; /* For Firefox */
 }
@@ -369,6 +369,9 @@ p {
 
 .questions-panel {
   margin-top: 1rem;
+  background-color: rgba(20, 30, 80, 0.3); /* Added subtle background */
+  padding: 15px;
+  border-radius: 10px;
 }
 
 .questions-list {

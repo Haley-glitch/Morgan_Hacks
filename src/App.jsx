@@ -147,8 +147,8 @@ const handleManualRender = async () => {
               parts: [
                 {
                   text:
-                    "Convert the following raw text into Markdown with KaTeX notation. " +
-                    "Wrap inline math in $...$ and block math in $$...$$."
+                    "Don't provide any introductory text.Just the conversion. Convert the following raw text into Markdown with KaTeX notation. " +
+                    "Wrap inline math in $...$ and block math in $$...$$. Don't provide any introductory text.Just the conversion."
                 },
                 {
                   text: manualInput
@@ -191,8 +191,8 @@ const fetchQuestions = async (sourceMarkdown) => {
   setError(null);
   try {
     const prompt = 
-      "Generate exactly five review questions for a student, based on the following Markdown with KaTeX content. " +
-      "Each question should include any math snippets rendered in KaTeX delimiters ($ or $$), and be phrased clearly:\n\n" +
+      "Generate exactly five review questions for a student, based on the following Markdown with KaTeX content. Don't provide any introductory text." +
+      "Don't provide any introductory text.. Each question should include any math snippets rendered in KaTeX delimiters ($ or $$), and be phrased clearly:\n\n" +
       sourceMarkdown;
 
     const res = await fetch(

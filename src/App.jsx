@@ -471,11 +471,15 @@ const handleManualRender = async () => {
             </div>
           </div>
           <button 
-            className="process-button" 
+            className={`process-button ${isLoading && imageFile ? 'processing' : ''}`} 
             onClick={readImage} 
             disabled={!imageFile || isLoading}
           >
-            {isLoading ? 'Processing...' : 'Process Image'}
+            {isLoading && imageFile ? (
+              <span className="button-loading">
+                <span className="spinner"></span> Processing...
+              </span>
+            ) : 'Process Content'}
           </button>
         </div>
 

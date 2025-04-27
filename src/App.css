@@ -241,7 +241,7 @@ p {
   overflow-wrap: break-word;
   text-align: left;
   padding: 10px;
-  margin-bottom: 100px;
+  margin-bottom: 50px;
 }
 
 .katex {
@@ -251,6 +251,15 @@ p {
 .katex-display {
   margin: 0 !important; /* Override default margins for block math */
   text-align: left; /* Align block math to the left */
+}
+
+.render-panel {
+  overflow-y: auto; /* Changed from visible to auto */
+  max-height: 60vh; /* Set a maximum height */
+  padding-right: 8px; /* Add some padding so scrollbar doesn't overlap content */
+  
+  /* Custom scrollbar styling */
+  scrollbar-width: 20px; /* For Firefox */
 }
 
 
@@ -321,8 +330,8 @@ p {
   font-size: 12pt;
   cursor: pointer;
   transition: all 0.2s ease;
-  width: 100%;
-  margin-top: 8px;
+  width: 70%;
+  margin-bottom: 50px;
 }
 
 .process-button:hover {
@@ -332,7 +341,29 @@ p {
 .process-button:disabled {
   background-color: rgba(200, 200, 200, 0.5);
   cursor: not-allowed;
+  opacity: 0.7;
 }
+
+/* Add to your CSS file */
+.button-loading {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 
 /* Compact icon styling */
 .upload-icon {

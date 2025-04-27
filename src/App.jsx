@@ -299,7 +299,7 @@ function Generate() {
         <div className="secondary-text">
           Render Output
           <div className="display-panel">
-            <BlockMath math={`x^2 - '\'frac{8}{\sum_y 7}`} errorColor={'#cc0000'} />
+            <BlockMath math={outputText} errorColor={'#cc0000'} />
           </div>
         </div>
       </div>

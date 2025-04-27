@@ -1,6 +1,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import './App.css'
+import AudioUploadToKatex from './Voice';
 
 var Input = "";
 var Output = "";
@@ -100,6 +101,18 @@ function CameraIcon()
   );
 }
 
+function AudioIcon() {
+  return (
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 14C13.6569 14 15 12.6569 15 11V5C15 3.34315 13.6569 2 12 2C10.3431 2 9 3.34315 9 5V11C9 12.6569 10.3431 14 12 14Z" fill="white"/>
+      <path d="M19 11C19 14.3137 16.3137 17 13 17H11C7.68629 17 5 14.3137 5 11H7C7 13.2091 8.79086 15 11 15H13C15.2091 15 17 13.2091 17 11H19Z" fill="white"/>
+      <path d="M12 17V22M8 22H16" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+}
+
+
+
 function NavBar()
 {
   return (
@@ -170,6 +183,12 @@ return (
               <CameraIcon />
             </div>
           </div>
+          <div className="col-container secondary-text">
+            Upload Audio
+            <div className="upload-button">
+              <AudioIcon />
+            </div>
+          </div>
         </div>
       </div>
 
@@ -202,6 +221,7 @@ function App()
         <Route path="/" element={<About />} />
         <Route path="/about" element={<About />} />
         <Route path="/generate" element={<Generate />} />
+        <Route path="/" element={<AudioUploadToKatex />} />
       </Routes>
     </div>
   );

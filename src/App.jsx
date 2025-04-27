@@ -110,6 +110,7 @@ function Generate() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [questions, setQuestions] = useState([]);
+  const [manualInput, setManualInput] = useState("")
 
   useEffect(() => {
     if (outputText) {
@@ -124,6 +125,67 @@ function Generate() {
     setAudioFile(file);
     setImageFile(null);
   };
+const handleManualRender = async () => {
+  if (!manualInput.trim()) {
+    setError("Please paste some Markdown/KaTeX first.");
+    return;
+  }
+
+  setIsLoading(true);
+  setError(null);
+
+  try {
+    // call Gemini just like you do for images/audio
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                {
+                  text:
+                    "Convert the following raw text into Markdown with KaTeX notation. " +
+                    "Wrap inline math in $...$ and block math in $$...$$."
+                },
+                {
+                  text: manualInput
+                }
+              ]
+            }
+          ],
+          safetySettings: [
+            { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
+            { category: "HARM_CATEGORY_HATE_SPEECH",  threshold: "BLOCK_MEDIUM_AND_ABOVE" },
+            { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
+            { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_MEDIUM_AND_ABOVE" }
+          ],
+          generationConfig: { maxOutputTokens: 2048, temperature: 0.0 }
+        })
+      }
+    );
+
+    if (!response.ok) {
+      let err = await response.json();
+      throw new Error(err.error?.message || response.statusText);
+    }
+
+    const data = await response.json();
+    const converted = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!converted) throw new Error("No content in Gemini response.");
+
+    // set both panels
+    setTranscription(converted);
+    setOutputText(converted);
+  } catch (e) {
+    console.error(e);
+    setError(`Conversion failed: ${e.message}`);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const handleImageUpload = async (file) => {
     if (file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
@@ -133,6 +195,7 @@ function Generate() {
         const text = await extractTextFromDocx(file);
         setTranscription(text);
         setOutputText(text);
+        setManualInput(text);
       } catch (error) {
         setError(`Error processing Word document: ${error.message}`);
       } finally {
@@ -245,6 +308,7 @@ function Generate() {
         const transcribedText = data.candidates[0].content.parts[0].text;
         setTranscription(transcribedText);
         setOutputText(transcribedText);
+        setManualInput(transcribedText);
       } else {
         throw new Error('Could not extract transcription from the API response.');
       }
@@ -332,6 +396,7 @@ function Generate() {
         const transcribedText = data.candidates[0].content.parts[0].text;
         setTranscription(transcribedText);
         setOutputText(transcribedText);
+        setManualInput(transcribedText);
       } else {
         throw new Error('Could not extract interpretation from the API response.');
       }
@@ -451,12 +516,22 @@ function Generate() {
       <div className="line-spacer"></div>
 
       <div className="row-container add-gaps">
-        <div className="secondary-text">
-          Markdown and KaTex Notation
-          <div className="display-panel">
-            {transcription}
-          </div>
-        </div>
+      <div className="secondary-text stretch-children">
+  Markdown & KaTeX Input
+  <textarea
+    className="display-panel textarea-input"
+    placeholder="Type or paste your Markdown/KaTeX here…"
+    value={manualInput}
+    onChange={e => setManualInput(e.target.value)}
+  />
+  <button
+    className="process-button"
+    onClick={handleManualRender}
+    disabled={isLoading || !manualInput.trim()}
+  >
+    {isLoading ? "Converting…" : "Convert Text"}
+  </button>
+</div>
 
         <div className="secondary-text stretch-children">
           Render Output

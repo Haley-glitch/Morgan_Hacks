@@ -361,4 +361,6 @@ p {
 .questions-list li {
   margin-bottom: 0.5em;          /* space between questions */
 }
-
+.textarea-input {
+  color: #fff;
+}

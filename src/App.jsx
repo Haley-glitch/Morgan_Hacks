@@ -186,6 +186,48 @@ const handleManualRender = async () => {
     setIsLoading(false);
   }
 };
+const fetchQuestions = async (sourceMarkdown) => {
+  setIsLoading(true);
+  setError(null);
+  try {
+    const prompt = 
+      "Generate exactly five review questions for a student, based on the following Markdown with KaTeX content. " +
+      "Each question should include any math snippets rendered in KaTeX delimiters ($ or $$), and be phrased clearly:\n\n" +
+      sourceMarkdown;
+
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { maxOutputTokens: 512, temperature: 0.0 }
+        })
+      }
+    );
+    if (!res.ok) throw new Error((await res.json()).error?.message || res.statusText);
+    const body = await res.json();
+    const raw = body.candidates?.[0]?.content?.parts?.[0]?.text || "";
+    // split out numbered list items
+    const lines = raw
+      .split(/\r?\n/)
+      .filter(l => /^\d+\./.test(l))
+      .map(l => l.replace(/^\d+\.\s*/, ""));
+    setQuestions(lines);
+  } catch (e) {
+    setError("Could not generate questions: " + e.message);
+  } finally {
+    setIsLoading(false);
+  }
+};
+useEffect(() => {
+  if (outputText) {
+    fetchQuestions(outputText);
+  } else {
+    setQuestions([]);
+  }
+}, [outputText]);
 
   const handleImageUpload = async (file) => {
     if (file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
@@ -546,10 +588,12 @@ const handleManualRender = async () => {
     <div className="questions-panel">
       <h3>Check Your Understanding</h3>
       <ol className="questions-list">
-        {questions.map((q, i) => (
-          <li key={i}>{q}</li>
-        ))}
-      </ol>
+  {questions.map((q, i) => (
+    <li key={i}>
+      <MarkdownWithMath text={q} />
+    </li>
+  ))}
+</ol>
     </div>
   )}
 </div>

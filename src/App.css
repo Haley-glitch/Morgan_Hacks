@@ -58,18 +58,6 @@ p {
   background:  linear-gradient(180deg, rgba(39, 15, 56, 1) 12.61% 12.61%, rgba(18, 23, 73, 1) 63.06% 63.06%);
 }
 
-
-
-/*.row-container {
-  display: flex;
-  float: center;
-  flex-direction: row;
-  align-items: center;
-  flex-wrap: nowrap;
-  align-content: space-around;
-  justify-content: center;
-}*/
-
 .row-container {
   display: flex;
   float: center;
@@ -394,4 +382,9 @@ p {
 }
 .textarea-input {
   color: #fff;
+}
+
+.textarea-input::placeholder {
+  color: #fff;
+  opacity: 0.8;
 }

@@ -125,16 +125,6 @@ function Generate() {
     setAudioFile(file);
     setImageFile(null);
   };
-  // useEffect(() => {
-  //   setTranscription(manualInput);
-  //   setOutputText(manualInput);
-  // }, [manualInput]);
-  // const handleManualRender = () => {
-  //   // just treat the user’s text exactly like we do an image→text result
-  //   setTranscription(manualInput);
-  //   setOutputText(manualInput);
-  // };
-  // inside Generate(), replace handleManualRender with:
 const handleManualRender = async () => {
   if (!manualInput.trim()) {
     setError("Please paste some Markdown/KaTeX first.");
@@ -205,6 +195,7 @@ const handleManualRender = async () => {
         const text = await extractTextFromDocx(file);
         setTranscription(text);
         setOutputText(text);
+        setManualInput(text);
       } catch (error) {
         setError(`Error processing Word document: ${error.message}`);
       } finally {
@@ -317,6 +308,7 @@ const handleManualRender = async () => {
         const transcribedText = data.candidates[0].content.parts[0].text;
         setTranscription(transcribedText);
         setOutputText(transcribedText);
+        setManualInput(transcribedText);
       } else {
         throw new Error('Could not extract transcription from the API response.');
       }
@@ -404,6 +396,7 @@ const handleManualRender = async () => {
         const transcribedText = data.candidates[0].content.parts[0].text;
         setTranscription(transcribedText);
         setOutputText(transcribedText);
+        setManualInput(transcribedText);
       } else {
         throw new Error('Could not extract interpretation from the API response.');
       }

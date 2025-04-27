@@ -341,3 +341,24 @@ p {
   width: 16px;
   height: 16px;
 }
+
+.render-panel {
+  position: relative;
+  /* your existing border, padding, etc */
+  padding-bottom: 2rem;  /* give room for questions */
+}
+
+.questions-panel {
+  margin-top: 1rem;
+}
+
+.questions-list {
+  list-style-type: decimal;      /* use simple 1,2,3… */
+  list-style-position: outside;  /* numbers sit neatly in the gutter */
+  margin: 1em 0 0 1.5em;         /* indent the list nicely */
+  padding: 0;                    /* reset any default padding */
+}
+.questions-list li {
+  margin-bottom: 0.5em;          /* space between questions */
+}
+

@@ -4,6 +4,10 @@ import { Routes, Route } from 'react-router-dom';
 import './App.css';
 import AudioPlay from './Voice';
 import ImageUpload from './Image';
+import {
+  extractMathSnippets,
+  generateQuestionsFromMath
+} from './utils/questionTemplates';
 import 'katex/dist/katex.min.css';
 import { BlockMath, InlineMath } from 'react-katex';
 import ReactMarkdown from 'react-markdown';
@@ -105,6 +109,16 @@ function Generate() {
   const [imageFile, setImageFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [questions, setQuestions] = useState([]);
+
+  useEffect(() => {
+    if (outputText) {
+      const snippets = extractMathSnippets(outputText);
+      setQuestions(generateQuestionsFromMath(snippets));
+    } else {
+      setQuestions([]);
+    }
+  }, [outputText]);
 
   const handleAudioUpload = (file) => {
     setAudioFile(file);
@@ -447,11 +461,24 @@ function Generate() {
         <div className="secondary-text stretch-children">
           Render Output
           <div className="display-panel render-panel">
-            <MarkdownWithMath text={outputText} />
-          </div>
+  <MarkdownWithMath text={outputText} />
+
+  {questions.length > 0 && (
+    <div className="questions-panel">
+      <h3>Check Your Understanding</h3>
+      <ol className="questions-list">
+        {questions.map((q, i) => (
+          <li key={i}>{q}</li>
+        ))}
+      </ol>
+    </div>
+  )}
+</div>
+
         </div>
       </div>
     </div>
+    
   );
 }
 

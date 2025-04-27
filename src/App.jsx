@@ -3,12 +3,11 @@ import React, { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import './App.css'
 import AudioPlay from './Voice';
+import ImageUpload from './Image';
 import { BlockMath } from 'react-katex';
 import 'katex/dist/katex.min.css';
-//const API_KEY = process.env.REACT_APP_GEMINI_KEY;
 
-var Input = "";
-var Output = "";
+const REACT_APP_GEMINI_KEY = "";
 
 function JoplinIcon()
 {
@@ -166,9 +165,14 @@ function Generate() {
   const [transcription, setTranscription] = useState('');
   const [outputText, setOutputText] = useState('');
   const [audioFile, setAudioFile] = useState(null);
-  console.log("Imported API Key:", API_KEY);
+  const [imageFile, setImageFile] = useState(null);
+
   const handleAudioUpload = (file) => {
     setAudioFile(file);
+  };
+
+  const handleImageUpload = (file) => {
+    setImageFile(file);
   };
 
   const transcribeAudio = async () => {
@@ -250,6 +254,81 @@ function Generate() {
     }
   };
 
+  const readImage = async () => {
+    if (!imageFile) {
+      alert('Please upload an image file first.');
+      return;
+    }
+
+    try {
+      const base64Image = await fileToBase64(imageFile);
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-002:generateContent?key=${REACT_APP_GEMINI_KEY}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            contents: [
+              {
+                parts: [
+                  {text: "Translate the text from the image into Markdown syntax by default. If there's any mathematical notation, format it using KaTeX notation, then switch back to Markdown notation. You are encouraged to use bullet points in Markdown syntax when appropriate." },
+                  {
+                    inlineData: {
+                      mimeType: imageFile.type,
+                      data: base64Image,
+                    },
+                  },
+                ],
+              },
+            ],
+            safetySettings: [
+              {
+                category: "HARM_CATEGORY_HARASSMENT",
+                threshold: "BLOCK_MEDIUM_AND_ABOVE",
+              },
+              {
+                category: "HARM_CATEGORY_HATE_SPEECH",
+                threshold: "BLOCK_MEDIUM_AND_ABOVE",
+              },
+              {
+                category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                threshold: "BLOCK_MEDIUM_AND_ABOVE",
+              },
+              {
+                category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+                threshold: "BLOCK_MEDIUM_AND_ABOVE",
+              },
+            ],
+            generationConfig: {
+              maxOutputTokens: 2048,
+            },
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Interpretation API Error:', errorData);
+        alert(`Error interpreting image: ${errorData?.error?.message || response.statusText}`);
+        return;
+      }
+
+      const data = await response.json();
+      if (data?.candidates?.[0]?.content?.parts?.[0]?.text) {
+        const transcribedText = data.candidates[0].content.parts[0].text;
+        setTranscription(transcribedText);
+        setOutputText(transcribedText);
+      } else {
+        alert('Could not extract interpretation from the API response.');
+      }
+    } catch (error) {
+      console.error('Error during image interpretation:', error);
+      alert(`An error occurred during image interpretation: ${error.message}`);
+    }
+  };
+
   const fileToBase64 = (file) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -270,7 +349,8 @@ function Generate() {
         <div className="row-container add-gaps">
           <div className="col-container secondary-text">
             Upload Image
-            <div className="upload-button">
+            <div className="upload-button" onClick={readImage}>
+              <ImageUpload onImageUploaded={handleImageUpload} />
               <DocIcon />
             </div>
           </div>

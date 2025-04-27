@@ -1,6 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import './App.css'
+import AudioPlay from './Voice';
+import { BlockMath } from 'react-katex';
+import 'katex/dist/katex.min.css';
+
+const REACT_APP_GEMINI_KEY = 'AIzaSyALtIv9VcAqUPHezs69z-7ZJKqWczHqXNg';
 
 var Input = "";
 var Output = "";
@@ -100,6 +105,16 @@ function CameraIcon()
   );
 }
 
+function AudioIcon() {
+  return (
+    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 14C13.6569 14 15 12.6569 15 11V5C15 3.34315 13.6569 2 12 2C10.3431 2 9 3.34315 9 5V11C9 12.6569 10.3431 14 12 14Z" fill="white"/>
+      <path d="M19 11C19 14.3137 16.3137 17 13 17H11C7.68629 17 5 14.3137 5 11H7C7 13.2091 8.79086 15 11 15H13C15.2091 15 17 13.2091 17 11H19Z" fill="white"/>
+      <path d="M12 17V22M8 22H16" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  );
+}
+
 function NavBar()
 {
   return (
@@ -147,9 +162,100 @@ function About()
   );
 };
 
-function Generate()
-{
-return (
+function Generate() {
+  const [transcription, setTranscription] = useState('');
+  const [outputText, setOutputText] = useState('');
+  const [audioFile, setAudioFile] = useState(null);
+
+  const handleAudioUpload = (file) => {
+    setAudioFile(file);
+  };
+
+  const transcribeAudio = async () => {
+    if (!audioFile) {
+      alert('Please upload an audio file first.');
+      return;
+    }
+
+    try {
+      const base64Audio = await fileToBase64(audioFile);
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-002:generateContent?key=${REACT_APP_GEMINI_KEY}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            contents: [
+              {
+                parts: [
+                  { text: "Transcribe this audio to text. If there's any mathematical notation, format it using LaTeX." },
+                  {
+                    inlineData: {
+                      mimeType: audioFile.type,
+                      data: base64Audio,
+                    },
+                  },
+                ],
+              },
+            ],
+            safetySettings: [
+              {
+                category: "HARM_CATEGORY_HARASSMENT",
+                threshold: "BLOCK_MEDIUM_AND_ABOVE",
+              },
+              {
+                category: "HARM_CATEGORY_HATE_SPEECH",
+                threshold: "BLOCK_MEDIUM_AND_ABOVE",
+              },
+              {
+                category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                threshold: "BLOCK_MEDIUM_AND_ABOVE",
+              },
+              {
+                category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+                threshold: "BLOCK_MEDIUM_AND_ABOVE",
+              },
+            ],
+            generationConfig: {
+              maxOutputTokens: 2048,
+            },
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Transcription API Error:', errorData);
+        alert(`Error transcribing audio: ${errorData?.error?.message || response.statusText}`);
+        return;
+      }
+
+      const data = await response.json();
+      if (data?.candidates?.[0]?.content?.parts?.[0]?.text) {
+        const transcribedText = data.candidates[0].content.parts[0].text;
+        setTranscription(transcribedText);
+        setOutputText(transcribedText);
+      } else {
+        alert('Could not extract transcription from the API response.');
+      }
+    } catch (error) {
+      console.error('Error during audio transcription:', error);
+      alert(`An error occurred during audio transcription: ${error.message}`);
+    }
+  };
+
+  const fileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result?.split(',')[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
+
+  return (
     <div className="page-container background-2">
       <NavBar />
 
@@ -170,6 +276,13 @@ return (
               <CameraIcon />
             </div>
           </div>
+          <div className="col-container secondary-text">
+            Upload Audio
+            <div className="upload-button">
+              <AudioPlay onAudioUploaded={handleAudioUpload} />
+              <button onClick={transcribeAudio}>Transcribe Audio</button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -179,20 +292,20 @@ return (
         <div className="secondary-text">
           Markdown and KaTex Notation
           <div className="display-panel">
-            {Input}
+            {transcription}
           </div>
         </div>
 
         <div className="secondary-text">
           Render Output
           <div className="display-panel">
-            {Output}
+            <BlockMath math={`x^2 - '\'frac{8}{\sum_y 7}`} errorColor={'#cc0000'} />
           </div>
         </div>
       </div>
     </div>
   );
-};
+}
 
 function App()
 {

@@ -34,7 +34,7 @@
   align-content: space-around;
   justify-content: space-between;
   width: 95%;
-
+  padding-top: 15px;
   top: 0px;
   left: auto;
   right: auto;
@@ -151,7 +151,7 @@
   width: 25%;
   border-radius: 12pt;
   border-width: 0px;
-
+  width: 150px;
   font-family: 'Arial';
   font-style: normal;
   font-weight: 400;
@@ -160,7 +160,7 @@
   white-space: nowrap;
   text-align: center;
   color: rgb(255, 255, 255);
-
+  margin-top: 50px;
   cursor: pointer;
 }
 

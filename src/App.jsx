@@ -1,6 +1,9 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
+
+
 import './App.css'
+import Generate from './components/Generate';
 
 var Input = "";
 var Output = "";
@@ -142,53 +145,6 @@ function About()
       <div className="line-spacer"></div>
       <div className="content-box redirect-button" onClick={function(){window.location.replace("/generate")}}>
           Get Started
-      </div>
-    </div>
-  );
-};
-
-function Generate()
-{
-return (
-    <div className="page-container background-2">
-      <NavBar />
-
-      <div className="line-spacer"></div>
-      <div className="line-spacer"></div>
-
-      <div className="left-half-frame">
-        <div className="row-container add-gaps">
-          <div className="col-container secondary-text">
-            Upload Image
-            <div className="upload-button">
-              <DocIcon />
-            </div>
-          </div>
-          <div className="col-container secondary-text">
-            Take Picture
-            <div className="upload-button">
-              <CameraIcon />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="line-spacer"></div>
-
-      <div className="row-container add-gaps">
-        <div className="secondary-text">
-          Markdown and KaTex Notation
-          <div className="display-panel">
-            {Input}
-          </div>
-        </div>
-
-        <div className="secondary-text">
-          Render Output
-          <div className="display-panel">
-            {Output}
-          </div>
-        </div>
       </div>
     </div>
   );

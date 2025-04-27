@@ -1,3 +1,13 @@
+p {
+  display: inherit;
+  margin-block-start: inherit;
+  margin-block-end: inherit;
+  margin-inline-start: inherit;
+  margin-inline-end: inherit;
+  unicode-bidi: inherit;
+  white-space: pre-wrap;
+}
+
 .page-container {
   display: flex;
   float: center;
@@ -48,11 +58,23 @@
   background:  linear-gradient(180deg, rgba(39, 15, 56, 1) 12.61% 12.61%, rgba(18, 23, 73, 1) 63.06% 63.06%);
 }
 
-.row-container {
+
+
+/*.row-container {
   display: flex;
   float: center;
   flex-direction: row;
   align-items: center;
+  flex-wrap: nowrap;
+  align-content: space-around;
+  justify-content: center;
+}*/
+
+.row-container {
+  display: flex;
+  float: center;
+  flex-direction: row;
+  align-items: stretch; /* Change this from center to stretch */
   flex-wrap: nowrap;
   align-content: space-around;
   justify-content: center;
@@ -125,25 +147,30 @@
 }
 
 .navbar-button {
-  font-family: 'Arial';
-  font-style: normal;
-  font-weight: 500;
-  font-size: 20pt;
-  line-height: auto;
+  font-family: 'Arial', sans-serif;
+  font-weight: 600; /* Slightly bolder for better readability */
+  font-size: 16px; /* Using px for more consistent sizing */
+  line-height: 1.2;
   white-space: nowrap;
   text-align: center;
-  color: rgb(255, 255, 255);
-  background-color: rgba(0, 0, 0, 0);
-
+  color: rgba(255, 255, 255, 0.9); /* Slightly transparent for depth */
+  background-color: transparent;
   cursor: pointer;
+  padding: 8px 12px; /* Added padding for better click area */
+  border-radius: 4px; /* Subtle rounded corners */
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); /* Smoother easing */
+  transform-origin: center; /* For scale animation */
+  display: inline-block; /* Better for transitions */
 }
 
 .navbar-button:hover {
   color: rgb(245, 145, 40);
-  font-size: 20pt;
+  transform: scale(1.05); /* Subtle scale instead of font-size change */
+  text-shadow: 0 0 8px rgba(245, 145, 40, 0.3); /* Soft glow effect */
+}
 
-  transition-property: all;
-  transition-duration: 0.25s;
+.navbar-button:active {
+  transform: scale(0.98); /* Subtle press effect */
 }
 
 .redirect-button {
@@ -207,10 +234,110 @@
   width: 45vw;
   background-color: rgba(30, 43, 111, 1);
   border: 3px solid rgba(255, 255, 255, 1);
-  min-height: 75vh;
+  margin-top: 5px;
+  min-height: 60vh;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  text-align: left;
+  padding: 10px;
+  margin-bottom: 100px;
+  
 }
+
+.katex {
+  font-size: inherit !important; /* Inherit font size from parent */
+}
+
+.katex-display {
+  margin: 0 !important; /* Override default margins for block math */
+  text-align: left; /* Align block math to the left */
+}
+
 
 .left-half-frame {
   width: 50vw;
   align-self: first baseline;
+}
+
+/* Compact upload section styling */
+.upload-section {
+  background-color: rgba(30, 43, 111, 0.7);
+  border-radius: 8pt;
+  padding: 12px;
+  margin: 8px;
+  width: 240px;
+  transition: all 0.2s ease;
+}
+
+.upload-section:hover {
+  background-color: rgba(30, 43, 111, 0.9);
+}
+
+/* Compact file input styling */
+.file-input-container {
+  position: relative;
+  margin: 10px 0;
+}
+
+.file-input-label {
+  display: block;
+  padding: 8px 12px;
+  background-color: rgba(45, 60, 140, 1);
+  color: white;
+  border-radius: 6pt;
+  cursor: pointer;
+  text-align: center;
+  font-size: 12pt;
+  transition: all 0.2s ease;
+}
+
+.file-input-label:hover {
+  background-color: rgb(90, 95, 185);
+}
+
+.file-input {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.file-name {
+  margin-top: 6px;
+  font-size: 10pt;
+  color: rgba(200, 200, 200, 1);
+}
+
+/* Compact process button */
+.process-button {
+  background-color: rgb(245, 145, 40);
+  color: white;
+  border: none;
+  border-radius: 6pt;
+  padding: 8px 12px;
+  font-size: 12pt;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.process-button:hover {
+  background-color: rgb(255, 165, 60);
+}
+
+.process-button:disabled {
+  background-color: rgba(200, 200, 200, 0.5);
+  cursor: not-allowed;
+}
+
+/* Compact icon styling */
+.upload-icon {
+  margin-right: 6px;
+  vertical-align: middle;
+  width: 16px;
+  height: 16px;
 }

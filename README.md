@@ -1,12 +1,11 @@
 # DigiText
 
-**DigiText** is a lightweight text-processing project that allows users to upload images or manually enter text, which is then converted into formatted output using **Markdown** and **KaTeX** rendering.
+**DigiText** is a lightweight text-processing project that allows users to upload images (.jpg, .img., .png, etc) or documents (.pdf, .docx), upload audio or manually enter text, which is then converted into formatted output using **Markdown** + **KaTeX** rendering that can then be imported to tools such as Joplin or Obsidian.
 
 ---
 
 ## Features
 - 🖼️ Upload an image or ✍️ type text manually.
-- 📜 Render text with **Markdown** styling (headings, bold, italics, etc.).
 - ✏️ Support for **KaTeX** for rendering mathematical formulas.
 - 🌟 Real-time preview as you type or upload!
 
@@ -22,6 +21,7 @@
 
 ## Future Plans
 - ✅ Full Markdown integration and spec compliance.
+- ✅Render text with **Markdown** styling (headings, bold, italics, etc.).
 - ✅ Better OCR post-processing for cleaner formatting.
 - ✅ Improved error handling for mixed Markdown/KaTeX inputs.
 - ✅ Mobile-friendly improvements.

@@ -5,7 +5,7 @@
 ---
 
 ## Features
-- 🖼️ Upload an image or ✍️ type text manually.
+- 🖼️ Upload an image, document, audio or ✍️ type text manually.
 - ✏️ Support for **KaTeX** for rendering mathematical formulas.
 - 🌟 Real-time preview as you type or upload!
 

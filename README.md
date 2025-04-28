@@ -1,12 +1,39 @@
-# React + Vite
+# DigiText
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**DigiText** is a lightweight text-processing project that allows users to upload images or manually enter text, which is then converted into formatted output using **Markdown** and **KaTeX** rendering.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
+- 🖼️ Upload an image or ✍️ type text manually.
+- 📜 Render text with **Markdown** styling (headings, bold, italics, etc.).
+- ✏️ Support for **KaTeX** for rendering mathematical formulas.
+- 🌟 Real-time preview as you type or upload!
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Current Limitations
+- **Markdown support is not integrated**:  
+  DigiText can take in the syntax of markdown when typed manually so that when u paste it to Joblin or Obsidian it will render, but **it does not support complete Markdown language specification YET**.
+- Complex Markdown features (like tables, nested lists, or extended syntax) may not work correctly.
+- Full Markdown compliance is planned **after this semester**.
+
+---
+
+## Future Plans
+- ✅ Full Markdown integration and spec compliance.
+- ✅ Better OCR post-processing for cleaner formatting.
+- ✅ Improved error handling for mixed Markdown/KaTeX inputs.
+- ✅ Mobile-friendly improvements.
+- ✅ Check your understanding to not just focus on Math.
+- ✅ Branch to various majors.
+
+---
+
+## How to Run
+```bash
+# Install dependencies
+npm install
+
+# Start the development server
+npm run dev

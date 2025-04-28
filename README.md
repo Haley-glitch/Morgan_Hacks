@@ -19,9 +19,9 @@
 
 ---
 
-## Future Plans
+## Future Plans To Look Forward To
 - ✅ Full Markdown integration and spec compliance.
-- ✅Render text with **Markdown** styling (headings, bold, italics, etc.).
+- ✅ Render text with **Markdown** styling (headings, bold, italics, etc.).
 - ✅ Better OCR post-processing for cleaner formatting.
 - ✅ Improved error handling for mixed Markdown/KaTeX inputs.
 - ✅ Mobile-friendly improvements.

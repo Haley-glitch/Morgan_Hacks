@@ -12,7 +12,7 @@
 ---
 
 ## Current Limitations
-- **Markdown support is not integrated**:  
+- **Markdown support is partially supported**:  
   DigiText can take in the syntax of markdown when typed manually so that when u paste it to Joblin or Obsidian it will render, but **it does not support complete Markdown language specification YET**.
 - Complex Markdown features (like tables, nested lists, or extended syntax) may not work correctly.
 - Full Markdown compliance is planned **after this semester**.
